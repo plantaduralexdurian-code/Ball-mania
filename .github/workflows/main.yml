@@ -1,22 +1,26 @@
-name: Build Ball Mania
+name: Compilar Ball Mania APK
 on: [push]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04  # Usamos una versión estable de Linux
     steps:
-      - name: Checkout del código
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Buildozer Action
-        uses: GearScrewdriver/buildozer-action@v1
-        with:
-          workdir: .
-          buildozer_version: master
+      - name: Instalar dependencias del sistema
+        run: |
+          sudo apt update
+          sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
+          pip3 install --user --upgrade Cython==0.29.33 buildozer
 
-      - name: Subir APK
+      - name: Compilar con Buildozer
+        run: |
+          export PATH=$PATH:$HOME/.local/bin
+          buildozer init  # Solo si no tienes el .spec, si ya lo tienes puedes comentar esta línea
+          buildozer -v android debug
+
+      - name: Subir el archivo APK
         uses: actions/upload-artifact@v4
         with:
-          name: Ball-Mania-APK
+          name: Ball-Mania-Instalable
           path: bin/*.apk
-          
