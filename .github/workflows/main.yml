@@ -1,0 +1,22 @@
+name: Build Ball Mania
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Buildozer Action
+        uses: GearScrewdriver/buildozer-action@v1
+        with:
+          workdir: .
+          buildozer_version: master
+
+      - name: Subir APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Ball-Mania-APK
+          path: bin/*.apk
+          
